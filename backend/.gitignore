@@ -1,0 +1,19 @@
+# Dependências do Node.js
+node_modules/
+
+# Arquivos de log
+*.log
+
+# Diretórios de build (exemplo para TypeScript)
+dist/
+
+# Arquivos do sistema operacional (ex: macOS, Windows)
+.DS_Store
+Thumbs.db
+
+# Configurações de editor (ex: Visual Studio Code, JetBrains)
+.vscode/
+.idea/
+
+# Arquivos de ambiente
+.env
