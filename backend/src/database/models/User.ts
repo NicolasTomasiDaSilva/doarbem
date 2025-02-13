@@ -3,19 +3,26 @@ import { v4 as uuidv4 } from "uuid";
 import sequelize from "../config/database";
 import bcrypt from "bcryptjs";
 
-interface UserAttributes {
+export interface UserAttributes {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  cpf: string;
+}
+export interface UserCreationAttributes {
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   cpf: string;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, "id"> {}
-
 class User extends Model<UserAttributes, UserCreationAttributes> {
-  public id!: number;
-  public name!: string;
+  public id!: string;
+  public firstName!: string;
+  public lastName!: string;
   public email!: string;
   public password!: string;
   public cpf!: string;
@@ -32,7 +39,11 @@ User.init(
       defaultValue: uuidv4,
       primaryKey: true,
     },
-    name: {
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    lastName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -46,7 +57,7 @@ User.init(
       unique: true,
     },
     cpf: {
-      type: DataTypes.STRING(11),
+      type: DataTypes.STRING,
       allowNull: false,
       unique: true,
       validate: {

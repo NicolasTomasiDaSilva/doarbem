@@ -1,10 +1,11 @@
 // userController.ts
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import User from "../models/User";
+import User from "../database/models/User";
+import UserServices from "../services/UserServices";
 
 class UserController {
-  async login(req: Request, res: Response): Promise<void> {
+  async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { email, password } = req.body;
     if (!email || !password) {
       res.status(400).json({ message: "Email e senha são obrigatórios." });
@@ -33,47 +34,24 @@ class UserController {
     }
   }
 
-  async register(req: Request, res: Response): Promise<void> {
-    const { name, email, password, cpf } = req.body;
-
-    if (!name || !email || !password || !cpf) {
-      res.status(400).json({ message: "Todos os campos são obrigatórios." });
-      return;
-    }
-
+  async register(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
-      // Verificar se o email já existe
-      const emailExists = await User.findOne({ where: { email } });
-      if (emailExists) {
-        res.status(400).json({ message: "Email já cadastrado." });
-        return;
-      }
-
-      // Verificar se o CPF já existe
-      const cpfExists = await User.findOne({ where: { cpf } });
-      if (cpfExists) {
-        res.status(400).json({ message: "CPF já cadastrado." });
-        return;
-      }
-
-      // Criar o novo usuário
-      const newUser = await User.create({
-        name,
+      const { firstName, lastName, email, password, cpf } = req.body;
+      await UserServices.register({
+        firstName,
+        lastName,
         email,
         password,
         cpf,
       });
-
-      res
-        .status(201)
-        .json({ message: "Usuário criado com sucesso.", user: newUser });
-      return;
+      res.status(201).json({ message: "User created" });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Erro no servidor." });
-      return;
+      next(error);
     }
   }
 }
-
 export default new UserController();

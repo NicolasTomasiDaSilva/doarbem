@@ -1,5 +1,5 @@
-import sequelize from "./config/database";
-import "./models/User";
+import sequelize from "./database/config/database";
+import "./database/models/User";
 
 async function init() {
   try {
